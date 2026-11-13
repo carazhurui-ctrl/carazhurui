@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Rui (Cara) Zhu"
+description = "An academic profile website for Rui (Cara) Zhu, presenting her research on AI-mediated communication, selected publications, academic background, and downloadable CV."
+version = "1.0.0"
+id = "artifacts/cara-zhu"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23085
+
+[services.development]
+run = "pnpm --filter @workspace/cara-zhu run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cara-zhu", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/cara-zhu/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23085"
+BASE_PATH = "/"
