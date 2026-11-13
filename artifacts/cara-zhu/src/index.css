@@ -79,7 +79,19 @@
 }
 
 :root { --paper: #f3f0e8; --ink: #213b34; --moss: #426457; --coral: #c86f55; --line: #d5d0c3; }
-.site-shell { overflow: clip; background: var(--paper); color: var(--ink); }
+.site-shell { overflow: clip; background: var(--paper); color: var(--ink); font-size: 17px; }
+.site-shell p { line-height: 1.8; }
+.site-shell .reveal p,
+.site-shell .hero-copy p,
+.site-shell .publication-row p,
+.site-shell .feature-panel p { font-size: clamp(1rem, 0.75vw + 0.9rem, 1.2rem); }
+.site-shell .hero-copy > p:nth-of-type(2) { font-size: clamp(1.15rem, 1.5vw, 1.6rem); }
+.site-shell .research-grid article p,
+.site-shell .feature-panel .reveal p,
+.site-shell .publication-row h3,
+.site-shell .section-title,
+.site-shell .hero-copy .section-kicker,
+.site-shell .section-kicker { transition: font-size .2s ease; }
 .serif { font-family: var(--app-font-serif); }
 .mono { font-family: var(--app-font-mono); }
 .topbar { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); background: rgba(243,240,232,.91); border-bottom: 1px solid rgba(33,59,52,.13); }
