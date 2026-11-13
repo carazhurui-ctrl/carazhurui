@@ -7,8 +7,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 
-const cvHref = '/assets/cara-zhu-cv.pdf';
-const articleHref = '/assets/presenting-the-augmented-self.pdf';
+const cvHref = `${import.meta.env.BASE_URL}assets/cara-zhu-cv.pdf`;
+const articleHref = `${import.meta.env.BASE_URL}assets/presenting-the-augmented-self.pdf`;
 const featuredDoi = 'https://doi.org/10.1093/anncom/wlag029';
 
 const publications = [
@@ -53,6 +53,13 @@ const publications = [
 function Home() {
   useEffect(() => {
     const items = document.querySelectorAll<HTMLElement>('.reveal');
+    const initialHash = window.location.hash.slice(1);
+    if (initialHash) {
+      requestAnimationFrame(() => {
+        document.getElementById(initialHash)?.scrollIntoView({ block: 'start' });
+      });
+    }
+
     if (!('IntersectionObserver' in window)) {
       items.forEach((item) => item.classList.add('is-visible'));
       return;
@@ -116,7 +123,7 @@ function Home() {
             </div>
             <div className="hero-portrait reveal" style={{ transitionDelay: '120ms' }}>
               <figure className="portrait-frame">
-                <img src="/assets/cara-zhu-headshot.jpg" alt="Portrait of Rui (Cara) Zhu" />
+                <img src={`${import.meta.env.BASE_URL}assets/cara-zhu-headshot.jpg`} alt="Portrait of Rui (Cara) Zhu" />
                 <figcaption className="relative z-[2] mt-3 px-1 text-[11px] text-[#65736c]">
                   East Lansing, Michigan
                 </figcaption>
