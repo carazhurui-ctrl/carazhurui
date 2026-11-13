@@ -50,7 +50,7 @@ const publications = [
   },
 ];
 
-function Home() {
+function useRevealOnMount() {
   useEffect(() => {
     const items = document.querySelectorAll<HTMLElement>('.reveal');
     const initialHash = window.location.hash.slice(1);
@@ -64,6 +64,7 @@ function Home() {
       items.forEach((item) => item.classList.add('is-visible'));
       return;
     }
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -72,15 +73,61 @@ function Home() {
         }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
+
     items.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
   }, []);
+}
+
+function PageShell({ children, title }: { children: ReactNode; title: string }) {
+  return (
+    <div className="site-shell min-h-[100dvh]">
+      <header className="topbar">
+        <div className="topbar-inner mx-auto flex max-w-[1320px] items-center justify-between px-6 py-4 md:px-12">
+          <a href="/" aria-label="Rui Zhu, home" className="flex items-center gap-3 no-underline">
+            <span className="serif text-[25px] leading-none">RZ</span>
+            <span className="hidden h-6 border-l border-[#d5d0c3] sm:block" />
+            <span className="mono hidden text-[10px] uppercase tracking-[.11em] text-[#65736c] sm:block">Communication · MSU</span>
+          </a>
+          <nav aria-label="Main navigation" className="desktop-nav anchor-list flex items-center gap-8 text-[13px]">
+            <a href="/about" className="nav-link">About</a>
+            <a href="/research" className="nav-link">Research</a>
+            <a href="/writing" className="nav-link">Writing</a>
+            <a href="/contact" className="nav-link">Contact</a>
+            <a data-testid="link-cv-nav" className="ml-1 inline-flex items-center gap-2 border border-[#213b34] px-3 py-2 text-[12px] no-underline transition-colors hover:bg-[#213b34] hover:text-[#f3f0e8]" href={cvHref} target="_blank" rel="noreferrer">
+              CV <ArrowUpRight size={14} aria-hidden="true" />
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-[1320px] px-6 py-16 md:px-12 md:py-20">
+        <div className="mb-8">
+          <p className="section-kicker mb-3">Rui (Cara) Zhu</p>
+          <h1 className="section-title">{title}</h1>
+        </div>
+        {children}
+      </main>
+
+      <footer className="border-t border-[#d5d0c3]">
+        <div className="mx-auto flex max-w-[1320px] flex-col justify-between gap-5 px-6 py-7 text-[11px] text-[#65736c] sm:flex-row sm:items-center md:px-12">
+          <span>Rui (Cara) Zhu <span className="px-2 text-[#c86f55]">/</span> Communication & human–AI interaction</span>
+          <a href="/" className="inline-flex items-center gap-2 no-underline hover:text-[#c86f55]">Back to home <ArrowUpRight size={13} aria-hidden="true" /></a>
+          <span className="mono">MICHIGAN STATE UNIVERSITY</span>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function HomePage() {
+  useRevealOnMount();
 
   const nav = [
-    ['About', '#about'],
-    ['Research', '#research'],
-    ['Writing', '#writing'],
-    ['Contact', '#contact'],
+    ['About', '/about'],
+    ['Research', '/research'],
+    ['Writing', '/writing'],
+    ['Contact', '/contact'],
   ];
 
   return (
@@ -88,7 +135,7 @@ function Home() {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-[#213b34] focus:px-4 focus:py-3 focus:text-[#f3f0e8]">Skip to content</a>
       <header className="topbar">
         <div className="topbar-inner mx-auto flex max-w-[1320px] items-center justify-between px-6 py-4 md:px-12">
-          <a href="#top" aria-label="Rui Zhu, home" className="flex items-center gap-3 no-underline">
+          <a href="/" aria-label="Rui Zhu, home" className="flex items-center gap-3 no-underline">
             <span className="serif text-[25px] leading-none">RZ</span>
             <span className="hidden h-6 border-l border-[#d5d0c3] sm:block" />
             <span className="mono hidden text-[10px] uppercase tracking-[.11em] text-[#65736c] sm:block">Communication · MSU</span>
@@ -115,7 +162,7 @@ function Home() {
                 How does AI change the way we speak to one another—and the way we understand one another?
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <a href="#research" className="inline-flex items-center gap-3 border-b border-[#c86f55] pb-2 text-[14px] font-medium no-underline">
+                <a href="/research" className="inline-flex items-center gap-3 border-b border-[#c86f55] pb-2 text-[14px] font-medium no-underline">
                   Explore my research <ArrowDown size={15} aria-hidden="true" />
                 </a>
                 <span className="mono text-[11px] tracking-[.04em] text-[#65736c]">Ph.D. candidate · Michigan State University</span>
@@ -341,6 +388,100 @@ function Home() {
   );
 }
 
+function AboutPage() {
+  return (
+    <PageShell title="About">
+      <div className="prose max-w-[900px]">
+        <p>
+          I study what happens when artificial intelligence becomes part of how people communicate—with each other, and with machines.
+        </p>
+        <p>
+          I’m a Communication doctoral candidate at Michigan State University. My work examines AI-mediated interpersonal messages and human–AI interaction: how people use AI to shape what they say, and how language can shape relationships, perceptions, attitudes, and behavior.
+        </p>
+        <div className="mt-10 grid grid-cols-1 gap-6 border-t border-[#d5d0c3] pt-6 sm:grid-cols-3">
+          <div><p className="section-kicker mb-2">Home department</p><p className="text-[14px]">Communication<br />Michigan State University</p></div>
+          <div><p className="section-kicker mb-2">Doctoral study</p><p className="text-[14px]">Communication<br />Expected May 2027</p></div>
+          <div><p className="section-kicker mb-2">Earlier study</p><p className="text-[14px]">AI & Digital Media<br />Hong Kong Baptist University</p></div>
+        </div>
+      </div>
+    </PageShell>
+  );
+}
+
+function ResearchPage() {
+  return (
+    <PageShell title="Research">
+      <div className="prose max-w-[900px]">
+        <p>
+          My research focuses on AI-mediated communication, human–AI interaction, and the social effects of language.
+        </p>
+        <p>
+          I study how people use AI in message-making, how humans form relationships with AI systems, and how language shapes perception and behavior.
+        </p>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <article className="border border-[#d5d0c3] p-6">
+            <span className="mono text-[11px] text-[#c86f55]">A / MESSAGE-MAKING</span>
+            <h3 className="serif mt-5 text-[28px] leading-tight">AI as a writing partner</h3>
+            <p className="mt-4 text-[14px] leading-[1.8] text-[#53645c]">When people turn to AI to compose interpersonal messages, what changes in self-presentation—and what does that change communicate?</p>
+          </article>
+          <article className="border border-[#d5d0c3] p-6">
+            <span className="mono text-[11px] text-[#c86f55]">B / RELATIONSHIPS</span>
+            <h3 className="serif mt-5 text-[28px] leading-tight">People relating to AI</h3>
+            <p className="mt-4 text-[14px] leading-[1.8] text-[#53645c]">How do language and interaction shape human–AI relationships, social influence, and people’s perceptions of the technology?</p>
+          </article>
+          <article className="border border-[#d5d0c3] p-6">
+            <span className="mono text-[11px] text-[#c86f55]">C / LANGUAGE</span>
+            <h3 className="serif mt-5 text-[28px] leading-tight">Language as social signal</h3>
+            <p className="mt-4 text-[14px] leading-[1.8] text-[#53645c]">How do linguistic choices shape impressions, attitudes, and behavior across digital communication?</p>
+          </article>
+        </div>
+      </div>
+    </PageShell>
+  );
+}
+
+function WritingPage() {
+  return (
+    <PageShell title="Writing">
+      <div className="prose max-w-[900px]">
+        <p>
+          I write about communication, AI, and language as social processes.
+        </p>
+        <p>
+          My work explores the social consequences of AI-mediated messaging and how emerging technologies reshape everyday interaction.
+        </p>
+        <div className="mt-8 rounded-none border border-[#d5d0c3] bg-[#f7f4ee] p-8">
+          <p className="mono text-[11px] tracking-[.1em] text-[#65736c]">FEATURED ARTICLE</p>
+          <h3 className="serif mt-4 text-[clamp(2rem,4vw,3.5rem)] leading-tight">Presenting the augmented self</h3>
+          <p className="serif mt-3 text-[1.25rem] italic leading-[1.35] text-[#213b34]">
+            Extending sender effects of the hyperpersonal model in artificial intelligence-mediated communication
+          </p>
+          <p className="mt-5 text-[14px] text-[#53645c]">Rui Zhu, David M. Markowitz & Brandon Van Der Heide · 2026</p>
+          <a href={articleHref} target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-3 bg-[#213b34] px-5 py-3 text-[13px] font-medium text-white no-underline">
+            Read the article <ArrowUpRight size={14} aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </PageShell>
+  );
+}
+
+function ContactPage() {
+  return (
+    <PageShell title="Contact">
+      <div className="prose max-w-[900px]">
+        <p>
+          I welcome conversations about communication, AI, language, and the questions that sit between them.
+        </p>
+        <a href="mailto:zhurui1@msu.edu" className="contact-link mt-8 inline-flex max-w-full items-center gap-4 border border-[#213b34] px-5 py-4 text-[clamp(1rem,3vw,1.35rem)] no-underline">
+          <Mail size={19} aria-hidden="true" /><span className="break-all">zhurui1@msu.edu</span><ArrowUpRight size={16} aria-hidden="true" />
+        </a>
+        <p className="mono mt-8 text-[10px] leading-[1.7] text-[#65736c]">Department of Communication · Michigan State University<br />East Lansing, Michigan</p>
+      </div>
+    </PageShell>
+  );
+}
+
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
@@ -350,7 +491,11 @@ function Router() {
   return (
     <RoutedErrorBoundary>
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path="/" component={HomePage} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/research" component={ResearchPage} />
+        <Route path="/writing" component={WritingPage} />
+        <Route path="/contact" component={ContactPage} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
